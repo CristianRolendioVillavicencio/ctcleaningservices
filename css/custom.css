@@ -4492,7 +4492,7 @@ body.page-shop .page-header-top-middle {
     padding-left: 24px;
     font-size: 14px;
     line-height: 25px;
-    color: #899198;
+    color: #000000;
 }
 .page-header.page-header--style2 .page-header-topline .page-header-info [class*="icon"] {
     font-size: 18px;
@@ -4570,7 +4570,7 @@ body.page-shop .page-header-top-middle {
     font-size: 16px;
     line-height: 25px;
     padding: 0 10px;
-    color: #899198;
+    color: #175375;
 }
 .page-header.page-header--style2 .page-header-topline .social-list > li a:hover {
     color: #175375;
