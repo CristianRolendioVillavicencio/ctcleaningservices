@@ -1,0 +1,7 @@
+{
+    "name": "cristianvillavicencio/ctcleaningservices",
+    "description": "Proyecto de ejemplo para ctcleaningservices",
+    "require": {
+        "php": ">=7.3"
+    }
+}
