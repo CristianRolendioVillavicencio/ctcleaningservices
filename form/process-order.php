@@ -1,46 +1,103 @@
 <?php
 
-$to = "cristian_villavicencio@live.com";  // Your email here
-$name = $_REQUEST['name'];
-$address = $_REQUEST['address'];
-$phone = $_REQUEST['phone'];
-$from = $_REQUEST['email'];
-$service = $_REQUEST['service'];
-$date = $_REQUEST['date'];
-$time1 = $_REQUEST['time1'];
-$time2 = $_REQUEST['time2'];
-$often = $_REQUEST['often'];
-$bedrooms = $_REQUEST['bedrooms'];
-$bathroom = $_REQUEST['bathroom'];
-$message = $_REQUEST['message'];
-$headers = "From: $from";
-$subject = "Order Form from Cleaning Service";
+// Ensure the request is a POST
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-$fields = array();
-$fields["name"] = "Name";
-$fields["address"] = "Address";
-$fields["phone"] = "Phone";
-$fields["email"] = "Email";
-$fields["service"] = "Service";
-$fields["date"] = "Date";
-$fields["time1"] = "From";
-$fields["time2"] = "To";
-$fields["often"] = "How often";
-$fields["bedrooms"] = "Bedroom(s)";
-$fields["bathroom"] = "Bathroom(s)";
-$fields["message"] = "Message";
+    // Get form fields and remove unnecessary spaces and tags
+    $name = strip_tags(trim($_POST["name"]));
+    $name = str_replace(array("\r","\n"), array(" ", " "), $name);
+    $email = filter_var(trim($_POST["email"]), FILTER_SANITIZE_EMAIL);
+    $phone = trim($_POST["phone"]);
+    $address = trim($_POST["address"]);
+    $service = trim($_POST["service"]);
+    $date = trim($_POST["date"]);
+    $time1 = trim($_POST["time1"]);
+    $time2 = trim($_POST["time2"]);
+    $often = trim($_POST["often"]);
+    $bedrooms = trim($_POST["bedrooms"]);
+    $bathroom = trim($_POST["bathroom"]);
+    $message = trim($_POST["message"]);
 
-$body = "Here is what was sent:\n\n"; 
-foreach($fields as $a => $b){   
-    $body .= sprintf("%20s: %s\n", $b, $_REQUEST[$a]);
-}
+    // Set the email subject
+    $subject = "Order Form from Cleaning Service";
 
-$send = mail($to, $subject, $body, $headers);
+    // Verify that the necessary data was sent and is valid
+    if (empty($name) OR empty($message) OR empty($phone) OR !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        // If not valid, send a HTTP 400 (Bad Request) response
+        http_response_code(400);
+        echo "Please fill all fields and try again.";
+        exit;
+    }
 
-if($send) {
-    echo "Mail sent successfully!";
+    // Email recipient address
+    $recipient = "cristianvillavicencix@gmail.com";
+
+    // Build the HTML email content
+    $email_content = <<<EMAIL
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+        .email-container { background-color: #ffffff; width: 100%; max-width: 600px; margin: 20px auto; padding: 20px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+        .header { background-color: #0046be; color: #ffffff; padding: 10px 20px; text-align: center; font-size: 24px; }
+        .content { padding: 20px; line-height: 1.6; color: #333333; }
+        .content p { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">Congratulations, Cleaning Service Team!</div>
+        <div class="content">
+            <p>Hello, $name:</p>
+            <p>You have received a new potential client interested in your $service services. It's time to shine!</p>
+            <p><strong>Potential Client Information:</strong></p>
+            <ul>
+                <li>Name: $name</li>
+                <li>Email: $email</li>
+                <li>Phone: $phone</li>
+                <li>Address: $address</li>
+                <li>Service: $service</li>
+                <li>Date: $date</li>
+                <li>From: $time1</li>
+                <li>To: $time2</li>
+                <li>How often: $often</li>
+                <li>Bedrooms: $bedrooms</li>
+                <li>Bathrooms: $bathroom</li>
+                <li>Message: $message</li>
+            </ul>
+            <p><strong>Review the Details:</strong> Verify the information provided by the potential client.</p>
+            <p><strong>Get in Touch:</strong> Do not miss the opportunity to turn this potential client into a successful sale. Call them or send them an email as soon as possible.</p> 
+            <p><strong>Offer Value:</strong> Provide excellent customer service and highlight our unique services.</p>
+        </div>
+    </div>
+</body>
+</html>
+EMAIL;
+
+    // Build the email headers for HTML content
+    $email_headers = "From: Cleaning Service <info@cleaningservice.com>\r\n";
+    $email_headers .= "Reply-To: $email\r\n";
+    $email_headers .= "MIME-Version: 1.0\r\n";
+    $email_headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+    $email_headers .= "X-Mailer: PHP/" . phpversion();
+
+    // Attempt to send the email
+    if (mail($recipient, $subject, $email_content, $email_headers)) {
+        // If the email is sent successfully, send a HTTP 200 (OK) response
+        http_response_code(200);
+        echo "<div style='position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 128, 0, 0.5); color: white; padding: 20px; border-radius: 10px; font-size: 24px; z-index: 10000;'>Thank You! Your message has been sent.</div>";
+        echo "<script>setTimeout(function() { window.location = '/'; }, 1000);</script>";
+    } else {
+        // If sending fails, send a HTTP 500 (Internal Server Error) response
+        http_response_code(500);
+        echo "Oops! Something went wrong and we couldn't send your message.";
+    }
+
 } else {
-    echo "Mail sending failed!";
+    // If the request is not POST, send a HTTP 403 (Forbidden) response
+    http_response_code(403);
+    echo "There was a problem with your submission, please try again.";
 }
 
 ?>
