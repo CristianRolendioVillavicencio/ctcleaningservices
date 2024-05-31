@@ -32,7 +32,7 @@ $email_content = <<<EMAIL
     <div class="email-container">
         <div class="header">Congratulations, Cleaning Service Team!</div>
         <div class="content">
-            <p>Hello, $name:</p>
+            <p>Hello Ct Cleaning Services:</p>
             <p>You have received a new potential client interested in your $service services. It's time to shine!</p>
             <p><strong>Potential Client Information:</strong></p>
             <ul>
