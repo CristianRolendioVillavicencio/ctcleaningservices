@@ -83,16 +83,12 @@ EMAIL;
     $email_headers .= "X-Mailer: PHP/" . phpversion();
 
     // Attempt to send the email
-    if (mail($recipient, $subject, $email_content, $email_headers)) {
-        // If the email is sent successfully, send a HTTP 200 (OK) response
-        http_response_code(200);
-        echo "<div style='position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 128, 0, 0.5); color: white; padding: 20px; border-radius: 10px; font-size: 24px; z-index: 10000;'>Thank You! Your message has been sent.</div>";
-        echo "<script>setTimeout(function() { window.location = '/'; }, 1000);</script>";
-    } else {
-        // If sending fails, send a HTTP 500 (Internal Server Error) response
-        http_response_code(500);
-        echo "Oops! Something went wrong and we couldn't send your message.";
-    }
+    if($send) {
+		echo "📧 Mail sent successfully!";
+	} else {
+		echo "🧧 Mail sending failed!";
+	}
+	
 
 } else {
     // If the request is not POST, send a HTTP 403 (Forbidden) response
