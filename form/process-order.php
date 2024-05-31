@@ -16,63 +16,30 @@ $message = $_REQUEST['message'];
 $headers = "From: $from";
 $subject = "Order Form from Cleaning Service";
 
-$email_content = <<<EMAIL
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
-        .email-container { background-color: #ffffff; width: 100%; max-width: 600px; margin: 20px auto; padding: 20px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
-        .header { background-color: #0046be; color: #ffffff; padding: 10px 20px; text-align: center; font-size: 24px; }
-        .content { padding: 20px; line-height: 1.6; color: #333333; }
-        .content p { margin: 10px 0; }
-    </style>
-</head>
-<body>
-    <div class="email-container">
-        <div class="header">Congratulations, Cleaning Service Team!</div>
-        <div class="content">
-            <p>Hello, $name:</p>
-            <p>You have received a new potential client interested in your $service services. It's time to shine!</p>
-            <p><strong>Potential Client Information:</strong></p>
-            <ul>
-                <li>Name: $name</li>
-                <li>Email: $from</li>
-                <li>Phone: $phone</li>
-                <li>Address: $address</li>
-                <li>Service: $service</li>
-                <li>Date: $date</li>
-                <li>From: $time1</li>
-                <li>To: $time2</li>
-                <li>How often: $often</li>
-                <li>Bedrooms: $bedrooms</li>
-                <li>Bathrooms: $bathroom</li>
-                <li>Message: $message</li>
-            </ul>
-            <p><strong>Review the Details:</strong> Verify the information provided by the potential client.</p>
-            <p><strong>Get in Touch:</strong> Do not miss the opportunity to turn this potential client into a successful sale. Call them or send them an email as soon as possible.</p> 
-            <p><strong>Offer Value:</strong> Provide excellent customer service and highlight our unique services.</p>
-        </div>
-    </div>
-</body>
-</html>
-EMAIL;
+$fields = array();
+$fields["name"] = "Name";
+$fields["address"] = "Address";
+$fields["phone"] = "Phone";
+$fields["email"] = "Email";
+$fields["service"] = "Service";
+$fields["date"] = "Date";
+$fields["time1"] = "From";
+$fields["time2"] = "To";
+$fields["often"] = "How often";
+$fields["bedrooms"] = "Bedroom(s)";
+$fields["bathroom"] = "Bathroom(s)";
+$fields["message"] = "Message";
 
-// Build the email headers for HTML content
-$email_headers = "From: Cleaning Service <info@cleaningservice.com>\r\n";
-$email_headers .= "Reply-To: $from\r\n";
-$email_headers .= "MIME-Version: 1.0\r\n";
-$email_headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-$email_headers .= "X-Mailer: PHP/" . phpversion();
+$body = "Here is what was sent:\n\n"; 
+foreach($fields as $a => $b){   
+    $body .= sprintf("%20s: %s\n", $b, $_REQUEST[$a]);
+}
 
-// Attempt to send the email
-if (mail($to, $subject, $email_content, $email_headers)) {
-    // If the email is sent successfully, send a HTTP 200 (OK) response
-    http_response_code(200);
+$send = mail($to, $subject, $body, $headers);
+
+if($send) {
     echo "📧 Mail sent successfully!";
 } else {
-    // If sending fails, send a HTTP 500 (Internal Server Error) response
-    http_response_code(500);
     echo "🧧 Mail sending failed!";
 }
 
